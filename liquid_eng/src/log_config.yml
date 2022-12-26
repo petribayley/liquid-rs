@@ -1,0 +1,12 @@
+appenders:
+    stdout:
+        kind: console
+        encoder:
+            pattern: "| {h({l})} | [{d(%Y-%m-%d %H:%M:%S)}] {M}> {m} {n}"
+        filters:
+            - kind: threshold
+              level: info
+root:
+    level: info
+    appenders:
+        - stdout

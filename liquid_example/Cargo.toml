@@ -1,0 +1,11 @@
+[package]
+name = "liquid_example" # the name of the package
+version = "1.0.0"    # the current version, obeying semver
+authors = ["Petri Bayley <petribayley@gmail.com>"]
+edition = "2021"
+
+[[bin]]
+name = "liquid_example"
+
+[dependencies]
+liquid_eng = { path = "../liquid_eng" }

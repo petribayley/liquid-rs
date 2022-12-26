@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+	"liquid_eng",
+	"liquid_example"
+]
