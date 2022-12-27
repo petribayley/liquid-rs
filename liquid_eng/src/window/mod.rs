@@ -1,13 +1,15 @@
+
+#[cfg(target_os = "windows")]
 mod win32;
 
+#[cfg(target_os = "macos")]
+mod macos;
+
+#[cfg(target_os = "windows")]
 use crate::window::win32::{LiquidWindowWin32,WinProcData};
 use crate::liquid_engine::{LiquidEngine, Event};
 use crate::io::LiquidError;
 use uuid::Uuid;
-use windows::Win32::UI::WindowsAndMessaging::*;
-use windows::Win32::Foundation::*;
-use windows::Win32::Graphics::Gdi::*;
-use windows::core::{PCWSTR, HSTRING};
 use std::sync::{Arc, Mutex};
 use log::{warn, error, info, trace, LevelFilter};
 
@@ -20,32 +22,30 @@ pub struct CreateWindowInfo {
 }
 #[derive(Debug)]
 pub enum LiquidWindow {
+	#[cfg(target_os = "windows")]
 	Win32(LiquidWindowWin32),
-}
-
-impl Drop for LiquidWindow {
-	fn drop(self: &mut LiquidWindow) {
-		match self {
-			LiquidWindow::Win32(window) => drop(window),
-		}
-	}
+	#[cfg(target_os = "macos")]
+	Macos(LiquidWindowMacos),
 }
 
 pub fn message_pump() {
-	if cfg!(windows) {
+	#[cfg(target_os = "windows")]
+	{
 		LiquidWindowWin32::message_pump();
-	} else if cfg!(unix) {
-	}
+	} 
 }
 
 impl LiquidEngine
 {
 	pub fn create_window(&mut self, create_window_info : &CreateWindowInfo) -> Result<uuid::Uuid, LiquidError> {
 		let uuid = uuid::Uuid::new_v4();
-		if cfg!(windows) {
+		#[cfg(target_os = "windows")]
+		{
 			self.windows.insert(*uuid.as_bytes(), LiquidWindow::Win32(LiquidWindowWin32::new(uuid, create_window_info, &self.event_queue as *const Arc<Mutex<Vec<Event>>>)?));
-		} else if cfg!(unix) {
-			panic!("Unix not supported yet");
+		}  
+		#[cfg(target_os = "macos")]
+		{
+			panic!("macos not supported yet");
 		}
 		info!("Created window of ID: {}", uuid);
 		Ok(uuid)
