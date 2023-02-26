@@ -1,5 +1,4 @@
 #![cfg_attr(debug_assertions, allow(unused_imports))]
-pub mod window;
 pub mod renderer;
 pub mod io;
 
@@ -61,35 +60,118 @@ pub mod liquid_engine{
 	/// Loop function for running 
 	pub fn run()
 	{
+		// Set runing flag to true
+		let event_loop = EventLoop::new();
 		LIQ_FLAGS.get().unwrap().write().unwrap()[0] = 1;
 
 		// Start thread for event handling, physics and game logic. The branching off from the main thread for game logic is a safety mechanism to ensure that window exiting will 
 		// still function if the game logic hangs.
 		let thread_handle = thread::spawn(move | | {
-			'outer : loop{
-				let mut events : Vec<Event> = Vec::new();
-				match self.event_queue.lock() {
-					Ok(mut ret) => {
-						events.clone_from(&ret);
-						ret.clear();
-					},
-					Err(e) => warn!("Warning, mutex poisoned! {}", e),
-				}
-				for event in events {
-					match event {
-						Event::Close(uuid) => {
-							self.destroy_window(&uuid).unwrap();
-						},
-						Event::Exit => {
-							break 'outer;
-						}
-					}
-				}
-			}
 		});
-
+		
 		// Run the OS message loop
-		message_pump();
+		event_loop.run(move |event, _event_loop, control_flow| {
+			match event {
+			Event::NewEvents(newEvent) => {
+
+			},
+			Event::WindowEvent { window_id, event } => {
+				match event {
+					WindowEvent::Resized(_) => {
+
+					},
+					WindowEvent::Moved(_) => {
+						
+					},
+					WindowEvent::CloseRequested => {
+						
+					},
+					WindowEvent::Destroyed => {
+						
+					},
+					WindowEvent::DroppedFile(_) => {
+						
+					},
+					WindowEvent::HoveredFile(_) => {
+						
+					},
+					WindowEvent::HoveredFileCancelled => {
+						
+					},
+					WindowEvent::ReceivedCharacter(_) => {
+						
+					},
+					WindowEvent::Focused(_) => {
+						
+					},
+					WindowEvent::KeyboardInput { device_id, input, is_synthetic } => {
+						
+					},
+					WindowEvent::ModifiersChanged(_) => {
+						
+					},
+					WindowEvent::Ime(_) => {
+						
+					},
+					WindowEvent::CursorMoved { device_id, position, modifiers } => {
+						
+					},
+					WindowEvent::CursorEntered { device_id } => {
+						
+					},
+					WindowEvent::CursorLeft { device_id } => {
+						
+					},
+					WindowEvent::MouseWheel { device_id, delta, phase, modifiers } => {
+						
+					},
+					WindowEvent::MouseInput { device_id, state, button, modifiers } => {
+						
+					},
+					WindowEvent::TouchpadPressure { device_id, pressure, stage } => {
+						
+					},
+					WindowEvent::AxisMotion { device_id, axis, value } => {
+						
+					},
+					WindowEvent::Touch(_) => todo!(),
+					WindowEvent::ScaleFactorChanged { scale_factor, new_inner_size } => {
+						
+					},
+					WindowEvent::ThemeChanged(_) => {
+						
+					},
+					WindowEvent::Occluded(_) => {
+						
+					},
+				}
+			},
+			Event::DeviceEvent { device_id, event } => {
+
+			},
+			Event::UserEvent(userEvent) => {
+
+			},
+			Event::Suspended => {
+
+			},
+			Event::Resumed => {
+
+			},
+			Event::MainEventsCleared => {
+				
+			},
+			Event::RedrawRequested(_) => {
+				
+			},
+			Event::RedrawEventsCleared => {
+				
+			},
+			Event::LoopDestroyed => {
+				
+			},
+		}
+		});
 		// Join back to the thread after the message loop as ended
 		let _ = thread_handle.join();
 	}
